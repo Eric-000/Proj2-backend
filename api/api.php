@@ -37,16 +37,17 @@ if(empty($request->query->all())) {
     }
     if($request->getMethod() == 'POST') {             // register, login
         if($request->query->getAlpha('action') == 'register') {
-            if($request->request->has('nick') and
-                $request->request->has('color') and
-                $request->request->has('icon') and
-                $request->request->has('pass')) {
+            if($request->request->has('name') and
+                $request->request->has('email') and
+                $request->request->has('username') and
+                $request->request->has('pass') and
+                $request->request->has('role')) {
                 $res = $session->get('sessionObj')->register(
-                    $request->request->getAlpha('nick'),
-                    $request->request->get('color'),
-                    $request->request->get('icon'),
+                    $request->request->getAlpha('name'),
+                    $request->request->get('email'),
+                    $request->request->get('username'),
                     $request->request->get('pass'),
-                    $request->request->get('csrf')
+                    $request->request->get('role')
                 );
                 if($res === true) {
                     $response->setStatusCode(201);
@@ -105,6 +106,62 @@ if(empty($request->query->all())) {
             $response->setStatusCode(400);
         }
     }
+    if($request->getMethod() == 'POST') {             // addmovie
+        if($request->query->getAlpha('action') == 'addmovie') {
+            if($request->request->has('Mname') and
+                $request->request->has('Mimage')) {
+                $res = $session->get('sessionObj')->addmovie1(
+                    $request->request->get('Mname'),
+                    $request->request->get('Mimage')
+                );
+                if($res === true) {
+                    $response->setStatusCode(201);
+
+                } elseif($res === false) {
+                    $response->setStatusCode(403);
+                } elseif($res === 0) {
+                    $response->setStatusCode(500);
+                }
+            } else {
+                $response->setStatusCode(400);
+            }
+        }
+    }
+
+    if($request->getMethod() == 'GET') {              // get movie_id,movie_name
+        if($request->query->getAlpha('action') == 'selectMID') {
+            $res = $session->get('sessionObj')->selectMID();
+            return $res;
+            $response->setStatusCode(400);
+        }
+    }
+
+    if($request->getMethod() == 'POST') {             // addshowing
+        if($request->query->getAlpha('action') == 'addshowing') {
+            if($request->request->has('Mid') and
+                $request->request->has('Amount') and
+                $request->request->has('Sfrom') and
+                $request->request->has('Sto')) {
+                $res = $session->get('sessionObj')->addShowing1(
+                    $request->request->getAlpha('Mid'),
+                    $request->request->get('Amount'),
+                    $request->request->get('Sfrom'),
+                    $request->request->get('Sto')
+                );
+                if($res === true) {
+                    $response->setStatusCode(201);
+
+                } elseif($res === false) {
+                    $response->setStatusCode(403);
+                } elseif($res === 0) {
+                    $response->setStatusCode(500);
+                }
+            } else {
+                $response->setStatusCode(400);
+            }
+        }
+    }
+
     if($request->getMethod() == 'DELETE') {           // delete queue, delete comment
         $response->setStatusCode(400);
     }
